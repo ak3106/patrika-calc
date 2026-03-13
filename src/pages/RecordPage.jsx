@@ -7,7 +7,6 @@ const RecordPage = () => {
     accessories: "",
     catNo: "",
     catRate: "",
-    designSlab: "",
     printType: "riso",
     catname: "A"
   });
@@ -19,18 +18,31 @@ const RecordPage = () => {
     });
   };
 
+  const getDesignSlab = (rate) => {
+    const r = Number(rate);
+
+    if (r <= 15) return 300;
+    if (r <= 25) return 400;
+    if (r <= 30) return 500;
+    if (r <= 35) return 600;
+    return 700;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const docId = `${formData.catname}${formData.catNo}`;
+
       const printCost = formData.printType === "riso" ? 1 : 1.5;
+
+      const designSlab = getDesignSlab(formData.catRate);
 
       const data = {
         accessories: Number(formData.accessories),
         catNo: Number(formData.catNo),
-        catRate: Number(formData.catRate),
-        designSlab: Number(formData.designSlab),
+        catRate: Number(formData.catRate)/2,
+        designSlab: designSlab,
         printCost: printCost,
         printType: formData.printType,
         catname: formData.catname
@@ -44,7 +56,6 @@ const RecordPage = () => {
         accessories: "",
         catNo: "",
         catRate: "",
-        designSlab: "",
         printType: "riso",
         catname: "A"
       });
@@ -55,6 +66,7 @@ const RecordPage = () => {
   };
 
   const previewId = `${formData.catname}${formData.catNo}`;
+  const previewSlab = getDesignSlab(formData.catRate);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-6">
@@ -69,10 +81,10 @@ const RecordPage = () => {
 
           <input
             name="catNo"
-            placeholder="Category No"
+            placeholder="Patrika No"
             value={formData.catNo}
             onChange={handleChange}
-            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
           />
 
           <input
@@ -80,30 +92,22 @@ const RecordPage = () => {
             placeholder="Accessories"
             value={formData.accessories}
             onChange={handleChange}
-            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
           />
 
           <input
             name="catRate"
-            placeholder="Category Rate"
+            placeholder="Catalog Rate"
             value={formData.catRate}
             onChange={handleChange}
-            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          <input
-            name="designSlab"
-            placeholder="Design Slab"
-            value={formData.designSlab}
-            onChange={handleChange}
-            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
           />
 
           <select
             name="catname"
             value={formData.catname}
             onChange={handleChange}
-            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
           >
             <option value="A">A</option>
             <option value="V">V</option>
@@ -115,21 +119,27 @@ const RecordPage = () => {
             name="printType"
             value={formData.printType}
             onChange={handleChange}
-            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
           >
             <option value="riso">Riso</option>
             <option value="screen">Screen</option>
           </select>
 
-          {/* Document ID Preview */}
+          {/* Live Design Slab */}
 
-          <div className="md:col-span-2 bg-gray-100 rounded-lg p-3 text-sm text-gray-700">
+          <div className="bg-gray-100 p-3 rounded-lg text-sm">
+            Design Slab: <span className="font-semibold">{previewSlab}</span>
+          </div>
+
+          {/* Document ID */}
+
+          <div className="md:col-span-2 bg-gray-100 p-3 rounded-lg text-sm">
             Document ID: <span className="font-semibold">{previewId}</span>
           </div>
 
           <button
             type="submit"
-            className="md:col-span-2 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+            className="md:col-span-2 bg-pink-800 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition"
           >
             Save Patrika Record
           </button>
