@@ -8,13 +8,14 @@ const RecordPage = () => {
     catNo: "",
     catRate: "",
     printType: "riso",
-    catname: "A"
+    catname: "J",
+    noPrints: "",
   });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -41,11 +42,12 @@ const RecordPage = () => {
       const data = {
         accessories: Number(formData.accessories),
         catNo: Number(formData.catNo),
-        catRate: Number(formData.catRate)/2,
+        catRate: Number(formData.catRate) / 2,
         designSlab: designSlab,
         printCost: printCost,
         printType: formData.printType,
-        catname: formData.catname
+        noPrints: Number(formData.noPrints),
+        catname: formData.catname,
       };
 
       await setDoc(doc(db, "patrika", docId), data);
@@ -57,9 +59,8 @@ const RecordPage = () => {
         catNo: "",
         catRate: "",
         printType: "riso",
-        catname: "A"
+        catname: "J",
       });
-
     } catch (error) {
       console.error("Error adding document:", error);
     }
@@ -69,16 +70,17 @@ const RecordPage = () => {
   const previewSlab = getDesignSlab(formData.catRate);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-linear-to-br from-green-100 to-blue-200 flex items-center justify-center p-6">
 
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8">
-
+      <div className="w-full max-w-2xl bg-linear-to-tr from-blue-50 to-white rounded-2xl shadow-xl p-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
           Add Patrika Design
         </h2>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
           <input
             name="catNo"
             placeholder="Patrika No"
@@ -91,6 +93,13 @@ const RecordPage = () => {
             name="accessories"
             placeholder="Accessories"
             value={formData.accessories}
+            onChange={handleChange}
+            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            name="noPrints"
+            placeholder="No. of Prints"
+            value={formData.noPrints}
             onChange={handleChange}
             className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
           />
@@ -143,7 +152,6 @@ const RecordPage = () => {
           >
             Save Patrika Record
           </button>
-
         </form>
       </div>
     </div>
