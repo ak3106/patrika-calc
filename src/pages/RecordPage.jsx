@@ -71,7 +71,6 @@ const RecordPage = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-green-100 to-blue-200 flex items-center justify-center p-6">
-
       <div className="w-full max-w-2xl bg-linear-to-tr from-blue-50 to-white rounded-2xl shadow-xl p-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
           Add Patrika Design
@@ -81,10 +80,30 @@ const RecordPage = () => {
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
+          <select
+            name="catname"
+            value={formData.catname}
+            onChange={handleChange}
+            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="A">A</option>
+            <option value="V">V</option>
+            <option value="J">J</option>
+            <option value="S">S</option>
+          </select>
+
           <input
             name="catNo"
             placeholder="Patrika No"
             value={formData.catNo}
+            onChange={handleChange}
+            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+          />
+
+          <input
+            name="catRate"
+            placeholder="Catalog Rate"
+            value={formData.catRate}
             onChange={handleChange}
             className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
           />
@@ -103,26 +122,6 @@ const RecordPage = () => {
             onChange={handleChange}
             className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
           />
-
-          <input
-            name="catRate"
-            placeholder="Catalog Rate"
-            value={formData.catRate}
-            onChange={handleChange}
-            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-          />
-
-          <select
-            name="catname"
-            value={formData.catname}
-            onChange={handleChange}
-            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="A">A</option>
-            <option value="V">V</option>
-            <option value="J">J</option>
-            <option value="S">S</option>
-          </select>
 
           <select
             name="printType"
