@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { db } from "../firebase.js";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RecordPage = () => {
   const [formData, setFormData] = useState({
@@ -9,13 +12,13 @@ const RecordPage = () => {
     catRate: "",
     printType: "riso",
     catname: "J",
-    noPrints: "",
+    noPrints: ""
   });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
@@ -32,27 +35,43 @@ const RecordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const { accessories, catNo, catRate, noPrints } = formData;
+
+    // FIELD VALIDATION
+    if (!accessories || !catNo || !catRate || !noPrints) {
+      toast.error("Fill out all the fields");
+      return;
+    }
+
     try {
       const docId = `${formData.catname}${formData.catNo}`;
 
-      const printCost = formData.printType === "riso" ? 1 : 1.5;
+      // CHECK IF RECORD EXISTS
+      const docRef = doc(db, "patrika", docId);
+      const existingDoc = await getDoc(docRef);
 
+      if (existingDoc.exists()) {
+        toast.error("Record already exists");
+        return;
+      }
+
+      const printCost = formData.printType === "riso" ? 1 : 1.5;
       const designSlab = getDesignSlab(formData.catRate);
 
       const data = {
         accessories: Number(formData.accessories),
         catNo: Number(formData.catNo),
         catRate: Number(formData.catRate) / 2,
-        designSlab: designSlab,
-        printCost: printCost,
+        designSlab,
+        printCost,
         printType: formData.printType,
         noPrints: Number(formData.noPrints),
-        catname: formData.catname,
+        catname: formData.catname
       };
 
-      await setDoc(doc(db, "patrika", docId), data);
+      await setDoc(docRef, data);
 
-      alert("Data added successfully");
+      toast.success("Recorded!");
 
       setFormData({
         accessories: "",
@@ -60,9 +79,12 @@ const RecordPage = () => {
         catRate: "",
         printType: "riso",
         catname: "J",
+        noPrints: ""
       });
+
     } catch (error) {
       console.error("Error adding document:", error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -70,8 +92,10 @@ const RecordPage = () => {
   const previewSlab = getDesignSlab(formData.catRate);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-100 to-blue-200 flex items-center justify-center p-6">
-      <div className="w-full max-w-2xl bg-linear-to-tr from-blue-50 to-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-200 flex items-center justify-center p-6">
+
+      <div className="w-full max-w-2xl bg-gradient-to-tr from-blue-50 to-white rounded-2xl shadow-xl p-8">
+
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
           Add Patrika Design
         </h2>
@@ -80,6 +104,7 @@ const RecordPage = () => {
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
+
           <select
             name="catname"
             value={formData.catname}
@@ -115,6 +140,7 @@ const RecordPage = () => {
             onChange={handleChange}
             className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
           />
+
           <input
             name="noPrints"
             placeholder="No. of Prints"
@@ -133,13 +159,9 @@ const RecordPage = () => {
             <option value="screen">Screen</option>
           </select>
 
-          {/* Live Design Slab */}
-
           <div className="bg-gray-100 p-3 rounded-lg text-sm">
             Design Slab: <span className="font-semibold">{previewSlab}</span>
           </div>
-
-          {/* Document ID */}
 
           <div className="md:col-span-2 bg-gray-100 p-3 rounded-lg text-sm">
             Document ID: <span className="font-semibold">{previewId}</span>
@@ -151,7 +173,11 @@ const RecordPage = () => {
           >
             Save Patrika Record
           </button>
+
         </form>
+
+        <ToastContainer position="top-center" autoClose={3000} />
+
       </div>
     </div>
   );
