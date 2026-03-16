@@ -12,13 +12,13 @@ const RecordPage = () => {
     catRate: "",
     printType: "riso",
     catname: "J",
-    noPrints: ""
+    noPrints: "",
   });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -66,7 +66,7 @@ const RecordPage = () => {
         printCost,
         printType: formData.printType,
         noPrints: Number(formData.noPrints),
-        catname: formData.catname
+        catname: formData.catname,
       };
 
       await setDoc(docRef, data);
@@ -79,9 +79,8 @@ const RecordPage = () => {
         catRate: "",
         printType: "riso",
         catname: "J",
-        noPrints: ""
+        noPrints: "",
       });
-
     } catch (error) {
       console.error("Error adding document:", error);
       toast.error("Something went wrong");
@@ -93,9 +92,7 @@ const RecordPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-200 flex items-center justify-center p-6">
-
       <div className="w-full max-w-2xl bg-gradient-to-tr from-blue-50 to-white rounded-2xl shadow-xl p-8">
-
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
           Add Patrika Design
         </h2>
@@ -104,68 +101,111 @@ const RecordPage = () => {
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
+          {/* CATEGORY */}
 
-          <select
-            name="catname"
-            value={formData.catname}
-            onChange={handleChange}
-            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="A">A</option>
-            <option value="V">V</option>
-            <option value="J">J</option>
-            <option value="S">S</option>
-          </select>
-
-          <input
-            name="catNo"
-            placeholder="Patrika No"
-            value={formData.catNo}
-            onChange={handleChange}
-            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-          />
-
-          <input
-            name="catRate"
-            placeholder="Catalog Rate"
-            value={formData.catRate}
-            onChange={handleChange}
-            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-          />
-
-          <input
-            name="accessories"
-            placeholder="Accessories"
-            value={formData.accessories}
-            onChange={handleChange}
-            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-          />
-
-          <input
-            name="noPrints"
-            placeholder="No. of Prints"
-            value={formData.noPrints}
-            onChange={handleChange}
-            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-          />
-
-          <select
-            name="printType"
-            value={formData.printType}
-            onChange={handleChange}
-            className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="riso">Riso</option>
-            <option value="screen">Screen</option>
-          </select>
-
-          <div className="bg-gray-100 p-3 rounded-lg text-sm">
-            Design Slab: <span className="font-semibold">{previewSlab}</span>
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold mb-1">Category</label>
+            <select
+              name="catname"
+              value={formData.catname}
+              onChange={handleChange}
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="A">A</option>
+              <option value="V">V</option>
+              <option value="J">J</option>
+              <option value="S">S</option>
+            </select>
           </div>
 
-          <div className="md:col-span-2 bg-gray-100 p-3 rounded-lg text-sm">
-            Document ID: <span className="font-semibold">{previewId}</span>
+          {/* PATRIKA NUMBER */}
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold mb-1">Patrika Number</label>
+            <input
+              name="catNo"
+              placeholder="Enter Patrika Number"
+              value={formData.catNo}
+              onChange={handleChange}
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+            />
           </div>
+
+          {/* CATALOG RATE */}
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold mb-1">Catalog Rate</label>
+            <input
+              name="catRate"
+              placeholder="Enter Catalog Rate"
+              value={formData.catRate}
+              onChange={handleChange}
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* ACCESSORIES */}
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold mb-1">Accessories</label>
+            <input
+              name="accessories"
+              placeholder="Accessories Cost"
+              value={formData.accessories}
+              onChange={handleChange}
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* NUMBER OF PRINTS */}
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold mb-1">
+              Number of Prints
+            </label>
+            <input
+              name="noPrints"
+              placeholder="Enter Number of Prints"
+              value={formData.noPrints}
+              onChange={handleChange}
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* PRINT TYPE */}
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold mb-1">Print Type</label>
+            <select
+              name="printType"
+              value={formData.printType}
+              onChange={handleChange}
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="riso">Riso</option>
+              <option value="screen">Screen</option>
+            </select>
+          </div>
+
+          {/* DESIGN SLAB */}
+
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold mb-1">Design Slab</label>
+            <div className="bg-gray-100 p-3 rounded-lg text-sm">
+              <span className="font-semibold">{previewSlab}</span>
+            </div>
+          </div>
+
+          {/* DOCUMENT ID */}
+
+          <div className="flex flex-col md:col-span-2">
+            <label className="text-sm font-semibold mb-1">Document ID</label>
+            <div className="bg-gray-100 p-3 rounded-lg text-sm">
+              <span className="font-semibold">{previewId}</span>
+            </div>
+          </div>
+
+          {/* BUTTON */}
 
           <button
             type="submit"
@@ -173,11 +213,9 @@ const RecordPage = () => {
           >
             Save Patrika Record
           </button>
-
         </form>
 
         <ToastContainer position="top-center" autoClose={3000} />
-
       </div>
     </div>
   );

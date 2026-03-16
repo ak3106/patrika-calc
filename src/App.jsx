@@ -15,7 +15,7 @@ const App = () => {
 
       <Routes>
 
-        <Route path="/" element={<RecordPage />} />
+        <Route path="/" element={<FetchPage />} />
 
         <Route path="/add" element={<RecordPage />} />
 
