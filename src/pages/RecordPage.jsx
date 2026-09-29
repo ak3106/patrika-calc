@@ -13,6 +13,7 @@ const RecordPage = () => {
     printType: "riso",
     catname: "J",
     noPrints: "",
+    stock: "",
   });
 
   const handleChange = (e) => {
@@ -35,10 +36,10 @@ const RecordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { accessories, catNo, catRate, noPrints } = formData;
+    const { accessories, catNo, catRate, noPrints, stock } = formData;
 
     // FIELD VALIDATION
-    if (!accessories || !catNo || !catRate || !noPrints) {
+    if (!accessories || !catNo || !catRate || !noPrints || !stock) {
       toast.error("Fill out all the fields");
       return;
     }
@@ -67,6 +68,7 @@ const RecordPage = () => {
         printType: formData.printType,
         noPrints: Number(formData.noPrints),
         catname: formData.catname,
+        stock: Number(formData.stock),
       };
 
       await setDoc(docRef, data);
@@ -80,6 +82,7 @@ const RecordPage = () => {
         printType: "riso",
         catname: "J",
         noPrints: "",
+        stock: 0,
       });
     } catch (error) {
       console.error("Error adding document:", error);
@@ -185,6 +188,18 @@ const RecordPage = () => {
               <option value="riso">Riso</option>
               <option value="screen">Screen</option>
             </select>
+          </div>
+
+          {/* STOCK */}
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold mb-1">Stock</label>
+            <input
+              name="stock"
+              placeholder="Enter Stock"
+              value={formData.stock}
+              onChange={handleChange}
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+            />
           </div>
 
           {/* DESIGN SLAB */}

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { useCart } from "../context/cartStore";
 
 const FetchPage = () => {
+  const { addToCart, cart } = useCart();
   const [form, setForm] = useState({
     catname: "J",
     catNo: "",
@@ -58,7 +60,12 @@ const FetchPage = () => {
     const perCost = finalCost/qty;
 
     setResult({
-      
+      patrikaId: docId,
+      catname: data.catname ?? form.catname,
+      catNo: data.catNo ?? form.catNo,
+      qty,
+      margin: Number(form.margin),
+      packing: form.packing,
       finalCost: Math.round(finalCost),
       base: (base),
       total: total,
@@ -66,7 +73,24 @@ const FetchPage = () => {
       marginAmount: marginAmount,
       profit: Math.round(profit),
       printType: data.printType,
+      catRate: data.catRate,
+      stock: Number(data.stock ?? 0),
     });
+  };
+
+  const handleAddToCart = () => {
+    if (!result) return;
+    const quantityAlreadyInCart = cart
+      .filter((item) => item.patrikaId === result.patrikaId)
+      .reduce((total, item) => total + Number(item.qty), 0);
+
+    if (result.qty + quantityAlreadyInCart > result.stock) {
+      alert(`Only ${result.stock} of ${result.patrikaId} are currently in stock.`);
+      return;
+    }
+
+    addToCart(result);
+    alert(`${result.catname}${result.catNo} added to cart.`);
   };
   const [showProfit, setShowProfit] = useState(false);
 
@@ -144,11 +168,13 @@ const FetchPage = () => {
         {result && (
           <div className="mt-6 bg-slate-100 p-4 rounded-lg font-bold">
             <h2 className="font-semibold mb-2">Calculation Result</h2>
-            <p className="font-medium text-sm">Base price before qty: ₹{result.base}</p>
-            <p className="font-medium text-sm">Cost (qty + slab): ₹{result.total}</p>
+            <p className="font-medium text-sm">Base price : ₹{result.catRate}</p>
+            {/* <p className="font-medium text-sm">Cost (qty + slab): ₹{result.total}</p> */}
             <p className="font-medium text-sm">Per patrika Cost: ₹{result.perCost}</p>
             {/* <p className="font-medium text-sm">Margin Amt: ₹{result.marginAmount}</p> */}
             <p className="text-xl">Final Cost: ₹{result.finalCost}</p>
+
+            <p className="font-medium text-sm">Available stock: {result.stock}</p>
 
             {/* Show/Hide Profit */}
             <button
@@ -161,6 +187,14 @@ const FetchPage = () => {
             {showProfit && <p>Profit: ₹{result.profit}</p>}
 
             <p>Print Type: {result.printType}</p>
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={result.qty > result.stock}
+              className="mt-3 w-full bg-slate-800 disabled:bg-slate-400 text-white py-2 rounded-lg hover:bg-slate-700"
+            >
+              {result.qty > result.stock ? "Not enough stock" : "Add to Cart"}
+            </button>
           </div>
         )}
       </div>

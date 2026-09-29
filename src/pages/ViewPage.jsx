@@ -103,12 +103,13 @@ const ViewPage = () => {
               <tr className="bg-slate-50/50 border-b border-slate-100">
                 <th className="px-6 py-4 text-xs font-bold uppercase text-slate-400">Record</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase text-slate-400 hidden md:table-cell">Type</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase text-slate-400 hidden sm:table-cell">Stock</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase text-slate-400 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
-                 <tr><td colSpan="3" className="p-10 text-center animate-pulse text-slate-400">Loading...</td></tr>
+                 <tr><td colSpan="4" className="p-10 text-center animate-pulse text-slate-400">Loading...</td></tr>
               ) : filteredRecords.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="px-6 py-4">
@@ -126,6 +127,7 @@ const ViewPage = () => {
                     <div className="text-sm font-medium text-slate-600">{item.printType}</div>
                     <div className="text-xs text-slate-400">{item.noPrints} Prints</div>
                   </td>
+                  <td className="px-6 py-4 hidden sm:table-cell text-sm font-semibold text-slate-700">{item.stock ?? 0}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button 
@@ -169,6 +171,7 @@ const ViewPage = () => {
               <DetailBox label="Total Prints" value={selectedRecord.noPrints} />
               <DetailBox label="Print Type" value={selectedRecord.printType} />
               <DetailBox label="Design Slab" value={selectedRecord.designSlab} />
+              <DetailBox label="Stock" value={selectedRecord.stock ?? 0} />
               <div className="col-span-2">
                 <DetailBox label="Accessories" value={selectedRecord.accessories || "None"} />
               </div>
