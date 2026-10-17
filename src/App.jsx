@@ -9,6 +9,7 @@ import ViewPage from "./pages/ViewPage";
 import OrderPage from "./pages/OrderPage";
 import { CartProvider } from "./context/CartContext";
 import ViewOrder from "./pages/ViewOrder";
+import Parameters from "./pages/Parameters";
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="/orders" element={<OrderPage />} />
         <Route path="/order-list" element={<ViewOrder />} />
 
+        <Route path="/values" element={<Parameters />} />
       </Routes>
       </CartProvider>
 

@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   Printer,
+  NutIcon,
 } from "lucide-react";
 
 const links = [
@@ -18,6 +19,7 @@ const links = [
   { to: "/view", label: "View", icon: LayoutGrid },
   { to: "/orders", label: "Cart", icon: ShoppingCart, isCart: true },
   { to: "/order-list", label: "View Orders", icon: ClipboardList },
+  { to: "/values", label: "Values", icon: NutIcon },
 ];
 
 const CartBadge = ({ count }) =>

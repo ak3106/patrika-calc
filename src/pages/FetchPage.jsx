@@ -11,6 +11,10 @@ const initialForm = {
   margin: 20,
   packing: false,
   digital: false,
+  plasticWrap: false,
+  stickerCommon: false,
+  stickerCustom: false,
+  nameSlip: false,
 };
 
 const inputClass =
@@ -19,6 +23,15 @@ const inputClass =
 const labelClass = "mb-2 block text-sm font-medium text-gray-700";
 
 const quantities = Array.from({ length: 19 }, (_, i) => 100 + i * 50);
+
+const additionalOptions = [
+  { key: "packing", label: "Packing" },
+  { key: "digital", label: "Digital printing" },
+  { key: "nameSlip", label: "Name Slip" },
+  { key: "plasticWrap", label: "Plastic Wrap" },
+  { key: "stickerCommon", label: "Sticker Common" },
+  { key: "stickerCustom", label: "Sticker Custom" },
+];
 
 const formatCurrency = (value) =>
   Number(value).toLocaleString("en-IN", {
@@ -34,7 +47,6 @@ const FetchPage = () => {
   const [pricingParameters, setPricingParameters] = useState(null);
   const [loadingPricing, setLoadingPricing] = useState(true);
   const [calculating, setCalculating] = useState(false);
-  const [showProfit, setShowProfit] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -68,6 +80,11 @@ const FetchPage = () => {
     setResult(null);
   };
 
+  const getOptionRate = (key) =>
+    Number(pricingParameters?.additional?.[key]);
+
+  const hasOptionRate = (key) => Number.isFinite(getOptionRate(key));
+
   const calculateRate = async (e) => {
     e.preventDefault();
 
@@ -90,11 +107,11 @@ const FetchPage = () => {
       return;
     }
 
-    if (
-      loadingPricing ||
-      !pricingParameters ||
-      (form.digital && !Number.isFinite(Number(pricingParameters.digital)))
-    ) {
+    const selectedOptionWithoutRate = additionalOptions.find(
+      ({ key }) => form[key] && !hasOptionRate(key),
+    );
+
+    if (loadingPricing || !pricingParameters || selectedOptionWithoutRate) {
       alert("Pricing parameters are unavailable. Please try again.");
       return;
     }
@@ -125,17 +142,16 @@ const FetchPage = () => {
       const marginAmount = margin * total;
       const accessoryMarginRemove = margin * (Number(data.accessories) * qty);
 
-      const packingCost = form.packing ? qty * 3 : 0;
-      const digitalCost = form.digital
-        ? qty * Number(pricingParameters.digital)
-        : 0;
+      const additionalCost = additionalOptions.reduce(
+        (sum, { key }) => (form[key] ? sum + qty * getOptionRate(key) : sum),
+        0,
+      );
 
       const finalCost =
         total +
         marginAmount -
         accessoryMarginRemove +
-        packingCost +
-        digitalCost;
+        additionalCost;
 
       const profit = marginAmount - accessoryMarginRemove;
 
@@ -147,6 +163,11 @@ const FetchPage = () => {
         margin: marginPercent,
         packing: form.packing,
         digital: form.digital,
+        nameSlip: form.nameSlip,
+        plasticWrap: form.plasticWrap,
+        stickerCommon: form.stickerCommon,
+        stickerCustom: form.stickerCustom,
+        additionalCost,
         finalCost: Math.round(finalCost),
         base,
         total,
@@ -158,7 +179,6 @@ const FetchPage = () => {
         stock: Number(data.stock ?? 0),
       });
 
-      setShowProfit(false);
     } catch (error) {
       console.error("Error calculating Patrika rate:", error);
       alert("Unable to calculate the rate. Please try again.");
@@ -346,6 +366,7 @@ const FetchPage = () => {
                       name="packing"
                       checked={form.packing}
                       onChange={handleChange}
+                      disabled={loadingPricing || !hasOptionRate("packing")}
                       className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-violet-700"
                     />
                     <span className="min-w-0 flex-1">
@@ -353,12 +374,19 @@ const FetchPage = () => {
                         Packing
                       </span>
                       <span className="mt-1 block text-xs text-gray-500">
+                        {loadingPricing
+                          ? "Loading packing rate..."
+                          : hasOptionRate("packing")
+                            ? `₹${formatCurrency(getOptionRate("packing"))} per card`
+                            : "Rate unavailable"}
+                      </span>
+                      <span className="hidden mt-1 block text-xs text-gray-500">
                         ₹3 per card
                       </span>
                     </span>
                     <span className="text-sm font-semibold text-gray-700">
-                      {form.packing
-                        ? `₹${(Number(form.qty) * 3).toLocaleString("en-IN")}`
+                      {form.packing && hasOptionRate("packing")
+                        ? `₹${(Number(form.qty) * getOptionRate("packing")).toLocaleString("en-IN")}`
                         : "Optional"}
                     </span>
                   </label>
@@ -388,8 +416,8 @@ const FetchPage = () => {
                       </span>
                     </span>
                     <span className="text-sm font-semibold text-gray-700">
-                      {form.digital && pricingParameters
-                        ? `₹${(Number(form.qty) * Number(pricingParameters.digital)).toLocaleString("en-IN")}`
+                      {form.digital && hasOptionRate("digital")
+                        ? `₹${(Number(form.qty) * getOptionRate("digital")).toLocaleString("en-IN")}`
                         : "Optional"}
                     </span>
                   </label>
@@ -438,15 +466,6 @@ const FetchPage = () => {
                         )
                       }
                       className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-violet-700"
-                      checked={form.plasticWrap}
-                      onChange={handleChange}
-                      disabled={
-                        loadingPricing ||
-                        !Number.isFinite(
-                          Number(pricingParameters?.additional?.plasticWrap),
-                        )
-                      }
-                      className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-violet-700"
                     />
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-medium text-gray-800">
@@ -469,29 +488,57 @@ const FetchPage = () => {
                     <input
                       type="checkbox"
                       name="stickerCommon"
-                      checked={form.digital}
+                      checked={form.stickerCommon}
                       onChange={handleChange}
                       disabled={
                         loadingPricing ||
                         !Number.isFinite(
-                          Number(pricingParameters?.additional?.digital),
+                          Number(pricingParameters?.additional?.stickerCommon),
                         )
                       }
                       className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-violet-700"
                     />
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-medium text-gray-800">
-                        Digital printing
+                        Sticker Common
                       </span>
                       <span className="mt-1 block text-xs text-gray-500">
                         {loadingPricing
-                          ? "Loading digital printing rate..."
-                          : `₹${pricingParameters?.additional?.digital ?? "—"} per card`}
+                          ? "Loading sticker common rate..."
+                          : `₹${pricingParameters?.additional?.stickerCommon ?? "—"} per card`}
                       </span>
                     </span>
                     <span className="text-sm font-semibold text-gray-700">
-                      {form.digital && pricingParameters
-                        ? `₹${(Number(form.qty) * Number(pricingParameters.digital)).toLocaleString("en-IN")}`
+                      {form.stickerCommon && pricingParameters
+                        ? `₹${(Number(form.qty) * Number(pricingParameters?.additional?.stickerCommon)).toLocaleString("en-IN")}`
+                        : "Optional"}
+                    </span>
+                  </label>
+
+                  <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 p-4 transition hover:border-violet-200 hover:bg-violet-50/30">
+                    <input
+                      type="checkbox"
+                      name="stickerCustom"
+                      checked={form.stickerCustom}
+                      onChange={handleChange}
+                      disabled={loadingPricing || !hasOptionRate("stickerCustom")}
+                      className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-violet-700"
+                    />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-medium text-gray-800">
+                        Sticker Custom
+                      </span>
+                      <span className="mt-1 block text-xs text-gray-500">
+                        {loadingPricing
+                          ? "Loading sticker custom rate..."
+                          : hasOptionRate("stickerCustom")
+                            ? `₹${formatCurrency(getOptionRate("stickerCustom"))} per card`
+                            : "Rate unavailable"}
+                      </span>
+                    </span>
+                    <span className="text-sm font-semibold text-gray-700">
+                      {form.stickerCustom && hasOptionRate("stickerCustom")
+                        ? `₹${(Number(form.qty) * getOptionRate("stickerCustom")).toLocaleString("en-IN")}`
                         : "Optional"}
                     </span>
                   </label>
