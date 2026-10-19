@@ -6,8 +6,9 @@ export default function Parameters() {
   const [formData, setFormData] = useState({
     riso: "",
     screen: "",
+    digital: "",
     additional: {
-      digital: "",
+      color: "",
       nameSlip: "",
       packing: "",
       plasticWrap: "",
@@ -23,7 +24,8 @@ export default function Parameters() {
   useEffect(() => {
     async function fetchPricingParameters() {
       try {
-        const docRef = doc(db, "settings", "pricing");
+        // Read from the same document that the form saves to.
+        const docRef = doc(db, "parameters", "pricing");
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -32,8 +34,9 @@ export default function Parameters() {
           setFormData({
             riso: data.riso ?? "",
             screen: data.screen ?? "",
+            digital: data.digital ?? "",
             additional: {
-              digital: data.additional?.digital ?? "",
+              color: data.additional?.color ?? "",
               nameSlip: data.additional?.nameSlip ?? "",
               packing: data.additional?.packing ?? "",
               plasticWrap: data.additional?.plasticWrap ?? "",
@@ -84,7 +87,7 @@ export default function Parameters() {
 
     try {
       // Keep the document path consistent with the data being fetched.
-      const docRef = doc(db, "settings", "pricing");
+      const docRef = doc(db, "parameters", "pricing");
 
       await setDoc(docRef, formData, { merge: true });
 
@@ -199,6 +202,22 @@ export default function Parameters() {
                     onChange={handleChange}
                     className={inputClass}
                     placeholder="Enter Screen value"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="digital" className={labelClass}>
+                    digital
+                  </label>
+                  <input
+                    id="digital"
+                    type="number"
+                    step="any"
+                    name="digital"
+                    value={formData.digital}
+                    onChange={handleChange}
+                    className={inputClass}
+                    placeholder="Enter Digital value"
                     required
                   />
                 </div>

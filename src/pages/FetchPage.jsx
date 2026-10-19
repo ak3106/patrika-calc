@@ -10,7 +10,7 @@ const initialForm = {
   qty: 100,
   margin: 20,
   packing: false,
-  digital: false,
+  color: false,
   plasticWrap: false,
   stickerCommon: false,
   stickerCustom: false,
@@ -26,7 +26,7 @@ const quantities = Array.from({ length: 19 }, (_, i) => 100 + i * 50);
 
 const additionalOptions = [
   { key: "packing", label: "Packing" },
-  { key: "digital", label: "Digital printing" },
+  { key: "color", label: "Digital Color printing" },
   { key: "nameSlip", label: "Name Slip" },
   { key: "plasticWrap", label: "Plastic Wrap" },
   { key: "stickerCommon", label: "Sticker Common" },
@@ -162,7 +162,7 @@ const FetchPage = () => {
         qty,
         margin: marginPercent,
         packing: form.packing,
-        digital: form.digital,
+        color: form.color,
         nameSlip: form.nameSlip,
         plasticWrap: form.plasticWrap,
         stickerCommon: form.stickerCommon,
@@ -280,9 +280,9 @@ const FetchPage = () => {
                   >
                     <option value="A">A</option>
                     <option value="V">V</option>
+                    <option value="B" >B</option>
                     <option value="J">J</option>
                     <option value="S">S</option>
-                    <option value="B">B</option>
                   </select>
                 </div>
 
@@ -394,30 +394,30 @@ const FetchPage = () => {
                   <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 p-4 transition hover:border-violet-200 hover:bg-violet-50/30">
                     <input
                       type="checkbox"
-                      name="digital"
-                      checked={form.digital}
+                      name="color"
+                      checked={form.color}
                       onChange={handleChange}
                       disabled={
                         loadingPricing ||
                         !Number.isFinite(
-                          Number(pricingParameters?.additional?.digital),
+                          Number(pricingParameters?.additional?.color),
                         )
                       }
                       className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-violet-700"
                     />
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-medium text-gray-800">
-                        Digital printing
+                        Digital Color
                       </span>
                       <span className="mt-1 block text-xs text-gray-500">
                         {loadingPricing
                           ? "Loading digital printing rate..."
-                          : `₹${pricingParameters?.additional?.digital ?? "—"} per card`}
+                          : `₹${pricingParameters?.additional?.color ?? "—"} per card`}
                       </span>
                     </span>
                     <span className="text-sm font-semibold text-gray-700">
-                      {form.digital && hasOptionRate("digital")
-                        ? `₹${(Number(form.qty) * getOptionRate("digital")).toLocaleString("en-IN")}`
+                      {form.color && hasOptionRate("color")
+                        ? `₹${(Number(form.qty) * getOptionRate("color")).toLocaleString("en-IN")}`
                         : "Optional"}
                     </span>
                   </label>

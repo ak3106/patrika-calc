@@ -10,9 +10,9 @@ const initialFormData = {
   catNo: "",
   catRate: "",
   printType: "riso",
-  catname: "J",
+  catname: "B",
   noPrints: "",
-  stock: "",
+  stock: "10000",
 };
 
 const inputClass =
@@ -82,7 +82,7 @@ const RecordPage = () => {
 
     if (
       [accessories, catNo, catRate, noPrints, stock].some(
-        (value) => String(value).trim() === ""
+        (value) => String(value).trim() === "",
       )
     ) {
       toast.error("Please fill in all fields");
@@ -99,7 +99,7 @@ const RecordPage = () => {
 
     if (
       Object.values(numericFields).some(
-        (value) => !Number.isFinite(value) || value < 0
+        (value) => !Number.isFinite(value) || value < 0,
       ) ||
       numericFields.catNo <= 0 ||
       numericFields.catRate <= 0
@@ -266,8 +266,7 @@ const RecordPage = () => {
 
               <div>
                 <label htmlFor="accessories" className={labelClass}>
-                  Accessories cost (₹){" "}
-                  <span className="text-red-500">*</span>
+                  Accessories cost (₹) <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="accessories"
@@ -334,6 +333,7 @@ const RecordPage = () => {
                 >
                   <option value="riso">Riso</option>
                   <option value="screen">Screen</option>
+                  <option value="digital">Digital</option>
                 </select>
               </div>
 
@@ -377,13 +377,23 @@ const RecordPage = () => {
                 <label className={labelClass}>Print cost</label>
                 <div className="flex min-h-[46px] items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
                   <span className="text-sm text-gray-500">
-                    {formData.printType === "riso" ? "Riso printing" : "Screen printing"}
+                    {formData.printType === "riso"
+                      ? "Riso printing"
+                      : formData.printType === "screen"
+                        ? "Screen printing"
+                        : "Digital printing"}
                   </span>
                   <span className="text-sm font-semibold text-gray-900">
                     {loadingPricing
                       ? "Loading..."
                       : pricingParameters
-                        ? `₹${formData.printType === "riso" ? pricingParameters.riso : pricingParameters.screen}`
+                        ? `₹${
+                            formData.printType === "riso"
+                              ? pricingParameters.riso
+                              : formData.printType === "screen"
+                                ? pricingParameters.screen
+                                : pricingParameters.digital
+                          }`
                         : "Unavailable"}
                   </span>
                 </div>
@@ -410,8 +420,7 @@ const RecordPage = () => {
                 <p className="mt-2 break-all text-xl font-semibold tracking-tight text-gray-900">
                   {previewId}
                 </p>
-                <p className="mt-1 text-xs text-gray-500">
-                </p>
+                <p className="mt-1 text-xs text-gray-500"></p>
               </div>
 
               <div className="rounded-xl border border-gray-200 bg-white p-4">
@@ -424,8 +433,7 @@ const RecordPage = () => {
                   </span>
                   <span className="text-xs text-gray-500">Calculated</span>
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
-                </p>
+                <p className="mt-1 text-xs text-gray-500"></p>
               </div>
             </div>
           </section>
@@ -495,11 +503,7 @@ const RecordPage = () => {
           </footer>
         </form>
 
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          theme="light"
-        />
+        <ToastContainer position="top-right" autoClose={3000} theme="light" />
       </div>
     </main>
   );

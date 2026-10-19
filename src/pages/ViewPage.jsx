@@ -82,7 +82,7 @@ const ViewPage = () => {
             />
           </div>
           <div className="flex items-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-sm overflow-x-auto">
-            {["ALL", "A", "V", "J", "S"].map((cat) => (
+            {["ALL", "A", "V", "J", "S","B"].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSortCategory(cat)}
