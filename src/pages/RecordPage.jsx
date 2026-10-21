@@ -10,7 +10,7 @@ const initialFormData = {
   catNo: "",
   catRate: "",
   printType: "riso",
-  catname: "B",
+  catname: "J",
   noPrints: "",
   stock: "10000",
 };
