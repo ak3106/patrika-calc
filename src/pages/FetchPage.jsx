@@ -325,7 +325,7 @@ const FetchPage = () => {
 
                 <div>
                   <label htmlFor="margin" className={labelClass}>
-                    Margin (%)
+                    M (%)
                   </label>
                   <div className="relative">
                     <input
@@ -632,12 +632,12 @@ const FetchPage = () => {
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-gray-100 p-4">
+                  {/* <div className="rounded-xl border border-gray-100 p-4">
                     <p className="text-xs text-gray-500">Base catalog rate</p>
                     <p className="mt-2 break-words text-lg font-semibold text-gray-900">
                       ₹{formatCurrency(result.catRate)}
                     </p>
-                  </div>
+                  </div> */}
 
                   <div className="rounded-xl border border-gray-100 p-4">
                     <p className="text-xs text-gray-500">Print type</p>
