@@ -10,7 +10,7 @@ const initialFormData = {
   catNo: "",
   catRate: "",
   printType: "riso",
-  catname: "J",
+  catname: "V",
   noPrints: "",
   stock: "10000",
 };
@@ -72,8 +72,14 @@ const RecordPage = () => {
     return 1000;
   };
 
+  // Helper function to calculate the final design slab adjusting for print type
+  const calculateDesignSlab = (rate, printType) => {
+    const baseSlab = getDesignSlab(rate);
+    return printType === "card" ? baseSlab - 100 : baseSlab;
+  };
+
   const previewId = `${formData.catname}${formData.catNo}`;
-  const previewSlab = getDesignSlab(formData.catRate);
+  const previewSlab = calculateDesignSlab(formData.catRate, formData.printType);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -128,13 +134,17 @@ const RecordPage = () => {
       const printCost =
         formData.printType === "riso"
           ? pricingParameters.riso
-          : pricingParameters.screen;
+          : formData.printType === "screen"
+            ? pricingParameters.screen
+            : formData.printType === "card"
+              ? pricingParameters.card
+              : pricingParameters.digital;
 
       const data = {
         accessories: numericFields.accessories,
         catNo: numericFields.catNo,
         catRate: numericFields.catRate / 2,
-        designSlab: getDesignSlab(numericFields.catRate),
+        designSlab: calculateDesignSlab(numericFields.catRate, formData.printType),
         printCost,
         printType: formData.printType,
         noPrints: numericFields.noPrints,
@@ -167,11 +177,6 @@ const RecordPage = () => {
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
             Add Patrika Design
           </h1>
-
-          {/* <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500 sm:text-base">
-            Create a new design record with catalog details, printing
-            information, and stock quantities.
-          </p> */}
         </header>
 
         <form
@@ -334,6 +339,7 @@ const RecordPage = () => {
                   <option value="riso">Riso</option>
                   <option value="screen">Screen</option>
                   <option value="digital">Digital</option>
+                  <option value="card">Card</option>
                 </select>
               </div>
 
@@ -381,7 +387,9 @@ const RecordPage = () => {
                       ? "Riso printing"
                       : formData.printType === "screen"
                         ? "Screen printing"
-                        : "Digital printing"}
+                        : formData.printType === "card"
+                          ? "Card printing"
+                          : "Digital printing"}
                   </span>
                   <span className="text-sm font-semibold text-gray-900">
                     {loadingPricing
@@ -392,7 +400,9 @@ const RecordPage = () => {
                               ? pricingParameters.riso
                               : formData.printType === "screen"
                                 ? pricingParameters.screen
-                                : pricingParameters.digital
+                                : formData.printType === "card"
+                                  ? pricingParameters.card
+                                  : pricingParameters.digital
                           }`
                         : "Unavailable"}
                   </span>
@@ -420,7 +430,6 @@ const RecordPage = () => {
                 <p className="mt-2 break-all text-xl font-semibold tracking-tight text-gray-900">
                   {previewId}
                 </p>
-                <p className="mt-1 text-xs text-gray-500"></p>
               </div>
 
               <div className="rounded-xl border border-gray-200 bg-white p-4">
@@ -433,7 +442,6 @@ const RecordPage = () => {
                   </span>
                   <span className="text-xs text-gray-500">Calculated</span>
                 </div>
-                <p className="mt-1 text-xs text-gray-500"></p>
               </div>
             </div>
           </section>

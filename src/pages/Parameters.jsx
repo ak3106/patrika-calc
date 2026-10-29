@@ -7,6 +7,7 @@ export default function Parameters() {
     riso: "",
     screen: "",
     digital: "",
+    card: "",
     additional: {
       color: "",
       nameSlip: "",
@@ -35,6 +36,7 @@ export default function Parameters() {
             riso: data.riso ?? "",
             screen: data.screen ?? "",
             digital: data.digital ?? "",
+            card: data.card ?? "",
             additional: {
               color: data.additional?.color ?? "",
               nameSlip: data.additional?.nameSlip ?? "",
@@ -218,6 +220,22 @@ export default function Parameters() {
                     onChange={handleChange}
                     className={inputClass}
                     placeholder="Enter Digital value"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="card" className={labelClass}>
+                    card
+                  </label>
+                  <input
+                    id="card"
+                    type="number"
+                    step="any"
+                    name="card"
+                    value={formData.card}
+                    onChange={handleChange}
+                    className={inputClass}
+                    placeholder="Enter Card value"
                     required
                   />
                 </div>

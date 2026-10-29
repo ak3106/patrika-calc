@@ -38,7 +38,12 @@ const toMillis = (ts) => (ts?.toMillis ? ts.toMillis() : 0);
 const itemLabel = (it) =>
   it.catNo ? `#${it.catNo}` : it.name || it.productName || "Item";
 const itemQty = (it) => Number(it.qty ?? it.quantity ?? it.pieces ?? 1);
-const itemRate = (it) => Number(it.catRate ?? it.rate ?? it.price ?? 0);
+// const itemRate = (it) => Number(it.catRate ?? it.rate ?? it.price ?? 0);
+const itemRate = (it) => {
+  const quantity = Number(it.qty ?? it.quantity ?? it.pieces ?? 1);
+  const costPerCard = Number(it.catRate ?? it.rate ?? it.price ?? 0) / quantity;
+  return costPerCard;
+};
 
 const ViewOrder = () => {
   const [records, setRecords] = useState([]);
